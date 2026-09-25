@@ -1,1 +1,186 @@
+# OOPs in Java (Object-Oriented Programming)
 
+## 1) What is OOP?
+Object-Oriented Programming is a way of writing programs by creating objects that contain both data and behavior.
+
+Java is a fully object-oriented language because everything is based on classes and objects.
+
+## 2) Main OOP Concepts in Java
+
+### a) Class
+A class is a blueprint or template for creating objects.
+
+Example:
+```java
+class Student {
+    String name;
+    int rollNo;
+}
+```
+
+### b) Object
+An object is an instance of a class.
+
+```java
+Student s1 = new Student();
+s1.name = "Amit";
+s1.rollNo = 101;
+```
+
+### c) Encapsulation
+Hiding internal data and exposing only necessary methods.
+
+```java
+class BankAccount {
+    private double balance;
+
+    public void deposit(double amount) {
+        balance += amount;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+}
+```
+
+### d) Inheritance
+A class can inherit properties and methods from another class.
+
+```java
+class Animal {
+    void eat() {
+        System.out.println("Eating...");
+    }
+}
+
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Barking...");
+    }
+}
+```
+
+### e) Polymorphism
+One method can behave differently in different classes.
+
+```java
+class Shape {
+    void draw() {
+        System.out.println("Drawing shape");
+    }
+}
+
+class Circle extends Shape {
+    @Override
+    void draw() {
+        System.out.println("Drawing circle");
+    }
+}
+```
+
+### f) Abstraction
+Showing only essential features and hiding the implementation details.
+
+```java
+abstract class Vehicle {
+    abstract void start();
+}
+```
+
+## 3) Constructor
+A constructor is a special method used to initialize objects.
+
+```java
+class Employee {
+    String name;
+
+    Employee(String name) {
+        this.name = name;
+    }
+}
+```
+
+## 4) Method Overloading
+Same method name but different parameters.
+
+```java
+class Calculator {
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    double add(double a, double b) {
+        return a + b;
+    }
+}
+```
+
+## 5) Method Overriding
+A child class provides a different implementation of a parent method.
+
+```java
+class Parent {
+    void show() {
+        System.out.println("Parent method");
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void show() {
+        System.out.println("Child method");
+    }
+}
+```
+
+## 6) Why OOP is useful
+- Reusability
+- Easy maintenance
+- Better organization of code
+- Scalable applications
+- Real-world modeling
+
+## 7) Simple OOP Example in Java
+```java
+class Person {
+    String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+
+    void display() {
+        System.out.println("Name: " + name);
+    }
+}
+
+class Student extends Person {
+    int rollNo;
+
+    Student(String name, int rollNo) {
+        super(name);
+        this.rollNo = rollNo;
+    }
+
+    void display() {
+        System.out.println("Name: " + name + ", Roll No: " + rollNo);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Student s = new Student("Rakesh", 12);
+        s.display();
+    }
+}
+```
+
+## 8) Summary
+OOPs in Java helps us model real-world entities using classes and objects. The four main pillars are:
+- Encapsulation
+- Inheritance
+- Polymorphism
+- Abstraction
+
+This is the foundation of Java programming.
