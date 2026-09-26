@@ -1,1 +1,60 @@
+public class ConstructorDemo {
+    private final String name;
+    private final int age;
 
+    ConstructorDemo() {
+        this("Unknown");
+        System.out.println("No-argument constructor");
+    }
+
+    ConstructorDemo(String name) {
+        this(name, 0);
+        System.out.println("One-argument constructor");
+    }
+
+    ConstructorDemo(String name, int age) {
+        this.name = name;
+        this.age = age;
+        System.out.println("Two-argument constructor");
+    }
+
+    void display() {
+        System.out.println("Name: " + name + ", age: " + age);
+    }
+
+    public static void main(String[] args) {
+        ConstructorDemo first = new ConstructorDemo();
+        first.display();
+
+        System.out.println();
+
+        ConstructorDemo second = new ConstructorDemo("Asha", 20);
+        second.display();
+    }
+}
+# OOP in Java - Lecture 2: Constructors
+
+The video is titled **"Constructors in Java | Constructor Chaining, Overloading & `this`"**. These notes summarize those topics; they are not a verbatim transcript.
+
+## Constructors
+
+- A constructor initializes a newly created object.
+- Its name must exactly match the class name, and it has no return type (not even `void`).
+- It runs when an object is created with `new`.
+- If a class declares no constructors, Java supplies a no-argument default constructor. Once any constructor is declared, Java does not supply that one automatically.
+
+## Constructor overloading
+
+A class can declare multiple constructors as long as their parameter lists differ in number, types, or order. This lets callers initialize objects in different ways. A different return type alone does not make a constructor overload; constructors have no return types.
+
+## `this`
+
+- `this` refers to the current object. It is useful when a parameter has the same name as an instance field, for example `this.name = name`.
+- `this(...)` calls another constructor in the same class, allowing initialization logic to be reused.
+- A `this(...)` constructor call must be the first statement in its constructor. A constructor cannot directly or indirectly chain back to itself.
+
+## Constructor chaining
+
+In the example, the no-argument constructor delegates to the one-argument constructor, which delegates to the two-argument constructor. The two-argument constructor performs the actual field initialization. This keeps the initialization logic in one place.
+
+Run `ConstructorDemo.java` to see the chained and overloaded constructors in action.
