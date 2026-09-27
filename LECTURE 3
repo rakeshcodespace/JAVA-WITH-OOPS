@@ -1,1 +1,107 @@
+# OOP in Java - Lecture 3: Objects Deep Dive
 
+These are topic-aligned study notes for ["Objects Deep Dive | Size, Call by Value vs Reference | Shallow vs Deep Copy | Java Full Course #14"](https://www.youtube.com/watch?v=7yd5qO2TPr0), not a verbatim transcript.
+
+## Objects and memory
+
+- A class describes a type; an object is an instance created at runtime.
+- An object contains its instance fields and JVM-managed object metadata. A reference is a value used to locate an object; it is not the object itself.
+- The JVM specification does not define a fixed byte size for an object. Actual size depends on the JVM, object headers, field layout, alignment, and options such as compressed references.
+- Use a tool such as Java Object Layout (JOL) when you need to inspect object layout on a particular JVM. A hand calculation based only on field types is not reliable.
+- The stack/heap picture is a useful teaching model, not a complete description of JVM execution. JIT optimizations can change where values are physically stored.
+
+## Java passes arguments by value
+
+- Java always passes a copy of the argument value to a method.
+- For a primitive, the copied value is the primitive itself. Assigning to the parameter does not change the caller's variable.
+- For an object, the copied value is the reference. The parameter and caller can refer to the same object, so a method can mutate that object's state.
+- Reassigning the parameter only changes its local copy of the reference; it does not redirect the caller's variable.
+- This is why Java is not "pass by reference," even though changes made through a shared object reference can be visible to the caller.
+
+## Shallow and deep copies
+
+- A shallow copy creates a new outer object but copies references to nested objects. The two outer objects can therefore share mutable state.
+- A deep copy also copies the mutable objects reachable through the outer object, so later mutations are independent (to the depth the copy operation defines).
+- Immutable values such as `String` are generally safe to share. For mutable object graphs, define the intended copy behavior explicitly; cycles and shared sub-objects need care.
+- In the demo, the shallow copy shares an `Address`; the deep copy creates a separate `Address`.
+
+Run `Lecture3ObjectsDeepDive.java` to see argument passing and copy behavior.
+
+//CODES OF NOTES
+
+public class Lecture3ObjectsDeepDive {
+    public static void main(String[] args) {
+        Student original = new Student("Mina", new Address("Delhi"));
+        Student shallowCopy = new Student(original);
+        Student deepCopy = original.deepCopy();
+
+        renameStudent(original);
+        System.out.println("Name after method mutation: " + original.getName());
+
+        replaceStudent(original);
+        System.out.println("Name after parameter reassignment: " + original.getName());
+
+        original.getAddress().setCity("Mumbai");
+        System.out.println("Original city: " + original.getAddress().getCity());
+        System.out.println("Shallow copy city: " + shallowCopy.getAddress().getCity());
+        System.out.println("Deep copy city: " + deepCopy.getAddress().getCity());
+        System.out.println("Shallow copy shares address: "
+                + (original.getAddress() == shallowCopy.getAddress()));
+        System.out.println("Deep copy shares address: "
+                + (original.getAddress() == deepCopy.getAddress()));
+    }
+
+    private static void renameStudent(Student student) {
+        student.setName("Asha");
+    }
+
+    private static void replaceStudent(Student student) {
+        student = new Student("Ravi", new Address("Pune"));
+    }
+}
+
+final class Student {
+    private String name;
+    private final Address address;
+
+    Student(String name, Address address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    Student(Student other) {
+        this(other.name, other.address);
+    }
+
+    String getName() {
+        return name;
+    }
+
+    void setName(String name) {
+        this.name = name;
+    }
+
+    Address getAddress() {
+        return address;
+    }
+
+    Student deepCopy() {
+        return new Student(name, new Address(address.getCity()));
+    }
+}
+
+final class Address {
+    private String city;
+
+    Address(String city) {
+        this.city = city;
+    }
+
+    String getCity() {
+        return city;
+    }
+
+    void setCity(String city) {
+        this.city = city;
+    }
+}
