@@ -1,1 +1,324 @@
+# OOP in Java - Lecture 4: Inheritance
 
+These notes summarize the core ideas of inheritance in Java. They are designed for classroom study and repository use, not a verbatim transcript of the lecture video.
+
+## 1) What is inheritance?
+
+Inheritance is one of the main pillars of OOP. It lets one class reuse the properties and behavior of another class.
+
+- Parent class (superclass) = base class
+- Child class (subclass) = derived class
+- The subclass inherits fields and methods from the superclass.
+- The subclass can add new features and also override behavior.
+
+Example:
+
+- `Animal` is a parent class.
+- `Dog` and `Cat` are child classes.
+
+This reduces duplicate code and makes the design cleaner.
+
+## 2) `extends` keyword
+
+A class inherits from another class using the `extends` keyword.
+
+```java
+class Animal {
+    void eat() {
+        System.out.println("Eating...");
+    }
+}
+
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Barking...");
+    }
+}
+```
+
+Here, `Dog` inherits `eat()` from `Animal` and also defines its own method `bark()`.
+
+## 3) Why inheritance matters
+
+Inheritance helps us:
+
+- reuse code
+- model real-world relationships
+- organize code into a hierarchy
+- reduce duplication
+- share common behavior across many classes
+
+## 4) Constructor chaining in inheritance
+
+When a subclass object is created, Java calls the parent constructor first.
+
+This is called constructor chaining.
+
+```java
+class Person {
+    String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+}
+
+class Employee extends Person {
+    int id;
+
+    Employee(String name, int id) {
+        super(name);
+        this.id = id;
+    }
+}
+```
+
+Important points:
+
+- `super(...)` must be the first statement inside the subclass constructor.
+- It calls the parent constructor.
+- If you do not write `super(...)`, Java inserts a no-argument `super()` automatically.
+
+## 5) `super` keyword
+
+`super` is used to refer to the parent class.
+
+It can be used for:
+
+- calling the parent constructor: `super(...)`
+- accessing parent methods: `super.methodName()`
+- accessing parent fields: `super.fieldName`
+
+Example:
+
+```java
+class Employee extends Person {
+    void printInfo() {
+        System.out.println(super.name);
+    }
+}
+```
+
+## 6) Method overriding
+
+A subclass can redefine a method that already exists in the parent class.
+
+This is called method overriding.
+
+```java
+class Animal {
+    void sound() {
+        System.out.println("Animal makes a sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Dog barks");
+    }
+}
+```
+
+Rules:
+
+- same method name
+- same parameter list
+- same return type (or covariant return type)
+- access modifier cannot be more restrictive
+
+Using `@Override` is recommended because it helps catch mistakes early.
+
+## 7) Upcasting and polymorphism
+
+A subclass object can be treated as its parent type.
+
+```java
+Animal a = new Dog();
+```
+
+This is called upcasting. It is useful in OOP because the same parent reference can point to different child objects.
+
+Example:
+
+```java
+Animal[] animals = {new Dog(), new Cat()};
+
+for (Animal animal : animals) {
+    animal.sound();
+}
+```
+
+This is polymorphism: the same method call behaves differently depending on the object type.
+
+## 8) `protected` access modifier
+
+`protected` allows access:
+
+- inside the same class
+- inside subclasses
+- inside the same package (in many cases)
+
+It is often used when parent class data needs to be accessed by child classes without exposing it to everyone.
+
+## 9) Inheritance types in Java
+
+Java supports:
+
+- single inheritance: one class extends one parent
+- multilevel inheritance: class A -> class B -> class C
+- hierarchical inheritance: multiple child classes extend one parent
+
+Java does not support multiple inheritance of classes, because it can create ambiguity.
+
+## 10) Real-world example
+
+A company structure often uses inheritance:
+
+- `Person`
+- `Employee` extends `Person`
+- `Manager` extends `Employee`
+- `Developer` extends `Employee`
+
+This is a natural model because all employees share common data like name and age, while managers and developers add their own specialized features.
+
+## 11) Key takeaways
+
+- Inheritance promotes code reuse.
+- A subclass inherits behavior and fields from its parent.
+- `super()` calls the parent constructor.
+- Overriding changes parent behavior in child classes.
+- Upcasting enables polymorphism.
+- Inheritance helps design scalable and organized object models.
+
+## 12) Interview-style summary
+
+You should be able to answer:
+
+- What is inheritance?
+- What is the purpose of `extends`?
+- How does constructor chaining work?
+- What does `super` do?
+- What is method overriding?
+- What is polymorphism?
+- Why is inheritance useful in real projects?
+
+## 13) Practice questions
+
+1. Write a `Vehicle` class and create `Car` and `Bike` subclasses.
+2. Use `super()` in subclass constructors.
+3. Override a method in a child class and print the output.
+4. Create an array of parent references and assign different child objects.
+5. Explain how Java calls the parent constructor when a child object is created.
+
+---
+
+This lecture introduces one of the most important concepts in Java OOP: inheritance. Once you understand this, the next step is learning polymorphism and abstraction more deeply.
+
+
+// CODE OF LECTURE 4
+
+public class Lecture4Inheritance {
+    public static void main(String[] args) {
+        System.out.println("=== Lecture 4: Inheritance in Java ===\n");
+
+        Employee emp = new Employee("Asha", 28, 50000);
+        emp.display();
+        emp.greet();
+
+        System.out.println();
+
+        Manager manager = new Manager("Ravi", 35, 90000, "Engineering");
+        manager.display();
+        manager.greet();
+        manager.manageTeam();
+
+        System.out.println();
+
+        Developer developer = new Developer("Mina", 26, 75000, "Java");
+        developer.display();
+        developer.greet();
+        developer.writeCode();
+
+        System.out.println();
+
+        // Upcasting: parent reference can point to child object
+        Person person = new Manager("Nisha", 32, 85000, "HR");
+        person.greet();
+
+        // Runtime polymorphism via method overriding
+        Person[] people = {new Employee("Sam", 30, 60000), new Manager("Karan", 40, 110000, "Sales")};
+
+        for (Person p : people) {
+            p.display();
+        }
+    }
+}
+
+class Person {
+    protected String name;
+    protected int age;
+
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    void greet() {
+        System.out.println("Hello, I am " + name + " and I am " + age + " years old.");
+    }
+
+    void display() {
+        System.out.println("Person: " + name + ", age: " + age);
+    }
+}
+
+class Employee extends Person {
+    protected double salary;
+
+    Employee(String name, int age, double salary) {
+        super(name, age);
+        this.salary = salary;
+    }
+
+    @Override
+    void display() {
+        System.out.println("Employee: " + name + ", age: " + age + ", salary: " + salary);
+    }
+}
+
+class Manager extends Employee {
+    private String department;
+
+    Manager(String name, int age, double salary, String department) {
+        super(name, age, salary);
+        this.department = department;
+    }
+
+    @Override
+    void display() {
+        System.out.println("Manager: " + name + ", age: " + age + ", salary: " + salary + ", department: " + department);
+    }
+
+    void manageTeam() {
+        System.out.println(name + " is managing the " + department + " team.");
+    }
+}
+
+class Developer extends Employee {
+    private String techStack;
+
+    Developer(String name, int age, double salary, String techStack) {
+        super(name, age, salary);
+        this.techStack = techStack;
+    }
+
+    @Override
+    void display() {
+        System.out.println("Developer: " + name + ", age: " + age + ", salary: " + salary + ", stack: " + techStack);
+    }
+
+    void writeCode() {
+        System.out.println(name + " is writing code in " + techStack + ".");
+    }
+}
