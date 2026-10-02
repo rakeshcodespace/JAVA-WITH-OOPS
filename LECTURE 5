@@ -1,1 +1,304 @@
+# OOP in Java - Lecture 5: Polymorphism
 
+These notes summarize the key ideas of polymorphism in Java. They are designed for classroom study and repository use, not a verbatim transcript of the lecture video.
+
+## 1) What is polymorphism?
+
+The word polymorphism means "many forms".
+
+In Java, polymorphism allows one method or object to behave differently depending on the context.
+
+The two main types are:
+
+- compile-time polymorphism
+- runtime polymorphism
+
+## 2) Compile-time polymorphism: method overloading
+
+Method overloading happens when multiple methods in the same class have the same name but different parameters.
+
+```java
+class Calculator {
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+
+    double add(double a, double b) {
+        return a + b;
+    }
+}
+```
+
+This is resolved at compile time by the Java compiler based on the number and types of arguments.
+
+### Benefits
+
+- same method name, different behavior
+- cleaner API design
+- easier readability
+
+## 3) Runtime polymorphism: method overriding
+
+Runtime polymorphism occurs when a child class provides a specific implementation of a method already defined in a parent class.
+
+```java
+class Animal {
+    void sound() {
+        System.out.println("Animal makes a sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Dog barks");
+    }
+}
+```
+
+When an `Animal` reference points to a `Dog` object, Java calls the `Dog` version of `sound()` at runtime.
+
+This is called dynamic method dispatch.
+
+## 4) Upcasting
+
+A subclass object can be assigned to a parent type reference.
+
+```java
+Animal a = new Dog();
+```
+
+This is allowed because a `Dog` is an `Animal`.
+
+The important part is that the actual object type is still `Dog`, so Java decides which overridden method to call dynamically.
+
+## 5) `@Override` annotation
+
+The `@Override` annotation tells the compiler:
+
+- this method is intended to override a parent method
+- if the signature does not match, Java gives an error
+
+It is a good Java practice to use it.
+
+## 6) Why polymorphism is useful
+
+Polymorphism helps us:
+
+- write flexible code
+- reduce repetitive conditions
+- handle different objects through a common parent type
+- create cleaner class hierarchies
+
+Example:
+
+```java
+Animal[] animals = {new Dog(), new Cat(), new Cow()};
+
+for (Animal animal : animals) {
+    animal.sound();
+}
+```
+
+Each object calls its own `sound()` implementation.
+
+## 7) `instanceof` keyword
+
+`instanceof` checks whether an object belongs to a particular class or subclass.
+
+```java
+if (animal instanceof Dog) {
+    System.out.println("This is a dog");
+}
+```
+
+This is useful when you need to handle specific subclass behavior.
+
+## 8) Abstract classes and polymorphism
+
+An abstract class can define common behavior while leaving some behavior to subclasses.
+
+```java
+abstract class Shape {
+    abstract void draw();
+}
+
+class Circle extends Shape {
+    @Override
+    void draw() {
+        System.out.println("Drawing a circle");
+    }
+}
+```
+
+This promotes a common contract for all shapes while allowing each shape to implement its own details.
+
+## 9) Real-world example
+
+A payment system can use polymorphism:
+
+- `Payment` is the parent class
+- `UPI`, `Card`, and `Cash` are child classes
+- each one implements `pay()` differently
+
+This makes code easier to expand later.
+
+## 10) Key takeaways
+
+- Polymorphism means "many forms".
+- Overloading gives compile-time polymorphism.
+- Overriding gives runtime polymorphism.
+- Parent references can point to child objects.
+- Java decides the method version at runtime.
+- `@Override` helps prevent mistakes.
+- Polymorphism makes code reusable and extensible.
+
+## 11) Interview-style summary
+
+Be ready to explain:
+
+- What is polymorphism?
+- Difference between method overloading and overriding
+- What is dynamic method dispatch?
+- Why is upcasting useful?
+- How does Java decide which method to call?
+- When would you use `instanceof`?
+
+## 12) Practice questions
+
+1. Write a class with overloaded methods.
+2. Create a parent class and two child classes with overridden methods.
+3. Use an array of parent references to call different child behaviors.
+4. Explain the difference between compile-time and runtime polymorphism.
+5. Create an abstract class `Shape` and implement `Circle` and `Rectangle`.
+
+---
+
+This lecture is all about making Java code flexible and reusable. Once you understand polymorphism, you are ready to move into abstraction, interfaces, and advanced OOP design patterns.
+
+
+// CODE OF LECTURE 5
+
+public class Lecture5Polymorphism {
+    public static void main(String[] args) {
+        System.out.println("=== Lecture 5: Polymorphism in Java ===\n");
+
+        // Compile-time polymorphism (method overloading)
+        Calculator calculator = new Calculator();
+        System.out.println("Add ints: " + calculator.add(10, 20));
+        System.out.println("Add three ints: " + calculator.add(10, 20, 30));
+        System.out.println("Add doubles: " + calculator.add(12.5, 7.5));
+
+        System.out.println();
+
+        // Runtime polymorphism (method overriding)
+        Shape[] shapes = {
+            new Circle("Red", 4),
+            new Rectangle("Blue", 5, 6),
+            new Triangle("Green", 3, 4)
+        };
+
+        for (Shape shape : shapes) {
+            shape.draw();
+            System.out.println("Area: " + shape.area());
+            System.out.println();
+        }
+
+        // Upcasting + instanceof
+        Shape shape = new Circle("Black", 7);
+        if (shape instanceof Circle) {
+            Circle circle = (Circle) shape;
+            System.out.println("Shape is a Circle with radius " + circle.radius);
+        }
+    }
+}
+
+class Calculator {
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+
+    double add(double a, double b) {
+        return a + b;
+    }
+}
+
+abstract class Shape {
+    String color;
+
+    Shape(String color) {
+        this.color = color;
+    }
+
+    abstract void draw();
+    abstract double area();
+}
+
+class Circle extends Shape {
+    double radius;
+
+    Circle(String color, double radius) {
+        super(color);
+        this.radius = radius;
+    }
+
+    @Override
+    void draw() {
+        System.out.println("Drawing a circle with color " + color);
+    }
+
+    @Override
+    double area() {
+        return Math.PI * radius * radius;
+    }
+}
+
+class Rectangle extends Shape {
+    double length;
+    double breadth;
+
+    Rectangle(String color, double length, double breadth) {
+        super(color);
+        this.length = length;
+        this.breadth = breadth;
+    }
+
+    @Override
+    void draw() {
+        System.out.println("Drawing a rectangle with color " + color);
+    }
+
+    @Override
+    double area() {
+        return length * breadth;
+    }
+}
+
+class Triangle extends Shape {
+    double base;
+    double height;
+
+    Triangle(String color, double base, double height) {
+        super(color);
+        this.base = base;
+        this.height = height;
+    }
+
+    @Override
+    void draw() {
+        System.out.println("Drawing a triangle with color " + color);
+    }
+
+    @Override
+    double area() {
+        return 0.5 * base * height;
+    }
+}
