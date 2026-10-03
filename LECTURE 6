@@ -1,1 +1,338 @@
+# OOP in Java - Lecture 6: Abstraction and Interfaces
 
+These notes summarize the key ideas of abstraction and interfaces in Java. They are designed for classroom study and repository use, not a verbatim transcript of the lecture video.
+
+## 1) What is abstraction?
+
+Abstraction means hiding implementation details and showing only the essential features to the user.
+
+For example:
+
+- You know how to drive a car without knowing the engine internals.
+- You use a `List` without caring how it is implemented internally.
+
+In Java, abstraction is achieved through:
+
+- abstract classes
+- interfaces
+
+## 2) Why abstraction is important
+
+Abstraction helps us:
+
+- reduce complexity
+- focus on important behavior
+- hide unnecessary details
+- build flexible and scalable systems
+
+It is one of the core principles of OOP.
+
+## 3) Abstract classes
+
+An abstract class cannot be instantiated directly. It is used as a base class for other classes.
+
+```java
+abstract class Animal {
+    abstract void sound();
+}
+```
+
+A subclass must implement all abstract methods unless it is also abstract.
+
+```java
+class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Dog barks");
+    }
+}
+```
+
+### Features of abstract classes
+
+- can have abstract methods
+- can have normal methods too
+- can have instance variables
+- can have constructors
+- can be partially implemented
+
+### When to use abstract classes
+
+Use abstract classes when you want to:
+
+- share common logic across several related classes
+- define a common base with some default behavior
+- require a common contract with partial implementation
+
+## 4) Abstract methods
+
+An abstract method has no body.
+
+```java
+abstract void draw();
+```
+
+The subclass provides the actual implementation.
+
+This is useful when different subclasses need different behavior but share the same method name.
+
+## 5) Interfaces
+
+An interface is a completely abstract contract.
+
+It defines what a class must do, not how it does it.
+
+```java
+interface Payment {
+    void pay();
+}
+```
+
+A class implements the interface:
+
+```java
+class UPI implements Payment {
+    @Override
+    public void pay() {
+        System.out.println("Pay using UPI");
+    }
+}
+```
+
+### Key points about interfaces
+
+- all methods are abstract by default (before Java 8)
+- a class can implement many interfaces
+- interfaces support loose coupling
+- they are used to define a standard behavior
+
+## 6) Difference between abstract class and interface
+
+| Feature | Abstract class | Interface |
+| --- | --- | --- |
+| Can have concrete methods | Yes | No (before Java 8) |
+| Can have fields | Yes | Only constants |
+| Multiple inheritance | No | Yes |
+| Used for | Shared behavior and partial implementation | Contract and standard behavior |
+| Instantiation | No | No |
+
+### Simple rule
+
+- Use an abstract class when classes are closely related and share common code.
+- Use an interface when classes are unrelated but follow the same behavior.
+
+## 7) Java 8+ interface features
+
+Modern Java allows interfaces to include:
+
+- default methods
+- static methods
+
+Example:
+
+```java
+interface Payment {
+    void pay();
+
+    default void printReceipt() {
+        System.out.println("Receipt generated");
+    }
+}
+```
+
+This makes interfaces more powerful without forcing every class to reimplement the method.
+
+## 8) Real-world examples
+
+### Example 1: Vehicle hierarchy
+
+```java
+abstract class Vehicle {
+    abstract void start();
+}
+```
+
+`Car`, `Bike`, and `Truck` can extend `Vehicle` and implement `start()` differently.
+
+### Example 2: Payment system
+
+```java
+interface Payment {
+    void pay();
+}
+```
+
+`CardPayment`, `UPIPayment`, and `CashPayment` can all implement `Payment` and behave differently while following the same contract.
+
+## 9) Why interfaces are useful
+
+Interfaces are very helpful when:
+
+- multiple classes need the same method names
+- you want to support multiple inheritance of behavior
+- you want to reduce dependency on concrete classes
+- you want a clean design for large projects
+
+They are commonly used in:
+
+- database APIs
+- payment gateways
+- sorting and comparison logic
+- framework design
+
+## 10) Polymorphism with abstraction and interfaces
+
+Abstraction and interfaces work beautifully with polymorphism.
+
+Example:
+
+```java
+Payment[] payments = {new UPI(), new Card()};
+
+for (Payment payment : payments) {
+    payment.pay();
+}
+```
+
+Each object follows the same interface but performs different behavior.
+
+## 11) Key takeaways
+
+- Abstraction hides unnecessary implementation details.
+- Abstract classes are used for shared code and common behavior.
+- Abstract methods force subclasses to provide implementation.
+- Interfaces define contracts.
+- Classes can implement multiple interfaces.
+- Interfaces help achieve loose coupling and polymorphism.
+
+## 12) Interview-style summary
+
+Be ready to explain:
+
+- What is abstraction?
+- Difference between abstract class and interface
+- Why do we use abstract methods?
+- When would you choose an interface over a class?
+- How does abstraction support polymorphism?
+- Can a class extend multiple classes? Can it implement multiple interfaces?
+
+## 13) Practice questions
+
+1. Create an abstract class `Shape` with an abstract `area()` method.
+2. Create two subclasses `Circle` and `Rectangle`.
+3. Create an interface `Payment` with `pay()` and implement it in `UPI` and `Card`.
+4. Explain the difference between `abstract class` and `interface` in your own words.
+5. Write code showing polymorphism using an interface array.
+
+---
+
+This lecture is about designing clean, reusable Java code. Abstraction and interfaces let us write flexible systems where the behavior is defined by contracts instead of rigid implementations.
+
+
+// CODES OF LECTURE 6
+
+public class Lecture6Abstraction {
+    public static void main(String[] args) {
+        System.out.println("=== Lecture 6: Abstraction and Interfaces in Java ===\n");
+
+        // Abstract class Example
+        Vehicle[] vehicles = {
+            new Car("Red"),
+            new Bike("Blue")
+        };
+
+        System.out.println("--- Abstract class polymorphism ---");
+        for (Vehicle vehicle : vehicles) {
+            vehicle.start();
+            vehicle.stop();
+            System.out.println("Vehicle color: " + vehicle.color);
+            System.out.println();
+        }
+
+        // Interface Example
+        Payment[] payments = {
+            new UPI(),
+            new CreditCard(),
+            new Cash()
+        };
+
+        System.out.println("--- Interface polymorphism ---");
+        for (Payment payment : payments) {
+            payment.pay();
+            payment.printReceipt();
+            System.out.println();
+        }
+
+        // instanceof demo
+        Vehicle v = new Car("Black");
+        if (v instanceof Car) {
+            Car c = (Car) v;
+            System.out.println("Vehicle is a Car with color: " + c.color);
+        }
+    }
+}
+
+abstract class Vehicle {
+    String color;
+
+    Vehicle(String color) {
+        this.color = color;
+    }
+
+    abstract void start();
+
+    void stop() {
+        System.out.println("Vehicle stopped.");
+    }
+}
+
+class Car extends Vehicle {
+    Car(String color) {
+        super(color);
+    }
+
+    @Override
+    void start() {
+        System.out.println("Car started. Engine is running.");
+    }
+}
+
+class Bike extends Vehicle {
+    Bike(String color) {
+        super(color);
+    }
+
+    @Override
+    void start() {
+        System.out.println("Bike started. Kick start is used.");
+    }
+}
+
+interface Payment {
+    void pay();
+
+    default void printReceipt() {
+        System.out.println("Receipt generated successfully.");
+    }
+}
+
+class UPI implements Payment {
+    @Override
+    public void pay() {
+        System.out.println("Paying using UPI");
+    }
+}
+
+class CreditCard implements Payment {
+    @Override
+    public void pay() {
+        System.out.println("Paying using Credit Card");
+    }
+}
+
+class Cash implements Payment {
+    @Override
+    public void pay() {
+        System.out.println("Paying using Cash");
+    }
+}
