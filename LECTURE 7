@@ -1,1 +1,155 @@
+# OOP in Java - Lecture 7: Classes, Objects, and Autoboxing
 
+These original study notes cover classes and objects alongside Java's automatic conversions between primitive values and their wrapper classes.
+
+## 1) Classes and objects
+
+- A **class** defines a type: it groups data (fields) and behavior (methods).
+- An **object** is an instance of a class, created with `new`.
+- Each object has its own instance state. In the example, `first` and `second` are separate `CountRecord` objects with different labels and counts.
+- A reference variable, such as `first`, refers to an object; it is not the object itself.
+- Encapsulation keeps fields private and exposes intentional operations through methods.
+
+```java
+CountRecord first = new CountRecord("First", 10);
+first.add(5);
+```
+
+The constructor initializes the new object's state. Calling `add` updates that object's `count`.
+
+## 2) Primitive types and wrapper classes
+
+Java primitives are not objects. Each primitive type has a corresponding wrapper class:
+
+| Primitive | Wrapper |
+| --- | --- |
+| `byte` | `Byte` |
+| `short` | `Short` |
+| `int` | `Integer` |
+| `long` | `Long` |
+| `float` | `Float` |
+| `double` | `Double` |
+| `char` | `Character` |
+| `boolean` | `Boolean` |
+
+Wrapper objects can be useful when an API requires objects—for example, Java collections such as `List<Integer>` cannot use `List<int>`.
+
+## 3) Autoboxing
+
+**Autoboxing** is Java's automatic conversion from a primitive value to its corresponding wrapper type.
+
+```java
+int score = 42;
+Integer boxedScore = score;
+```
+
+Conceptually, Java performs a conversion similar to `Integer.valueOf(score)`. Prefer the value-based conversion over explicitly constructing wrapper objects.
+
+## 4) Unboxing
+
+**Unboxing** is Java's automatic conversion from a wrapper object to its primitive type.
+
+```java
+Integer boxedScore = 42;
+int score = boxedScore;
+```
+
+Unboxing also happens in operations that require a primitive. In the demo, adding an `Integer` from the scores list to an `int` total unboxes the value.
+
+## 5) Important cautions
+
+- A wrapper can be `null`; attempting to unbox it throws `NullPointerException`. Check for `null` before using a wrapper where that is possible.
+- Wrappers are objects, so use `.equals()` to compare their values. Do not rely on `==` for wrapper value equality; object identity and caching can make its result misleading.
+- Boxing creates or obtains wrapper objects and unboxing extracts primitive values. For large, performance-sensitive numeric loops, avoid unnecessary boxing.
+- A wrapper may be useful to represent a missing value (`null`), while a primitive always has a value.
+
+## 6) Example output
+
+```text
+=== Lecture 7: Classes, Objects, and Autoboxing ===
+
+First count: 15
+Second count: 25
+
+Primitive score: 42
+Wrapped score: 42
+Unwrapped score: 42
+
+Scores: [80, 95]
+Total: 175
+```
+
+Run `Lecture7Autoboxing.java` to see two independent objects, encapsulated state, boxing, unboxing, and autoboxing in a collection.
+
+## 7) Key takeaways
+
+- Classes define data and behavior; objects are instances with their own state.
+- Constructors initialize objects, and methods provide behavior.
+- Every primitive type has a wrapper class.
+- Autoboxing converts a primitive to a wrapper; unboxing converts a wrapper to a primitive.
+- Java collections of numbers use wrapper types, such as `List<Integer>`.
+- Watch out for `null` unboxing and wrapper comparisons with `==`.
+
+## 8) Practice
+
+1. Create a `Book` class with private `title` and `pages` fields, a constructor, and a method that prints its details.
+2. Create two `Book` objects and explain why changing one object's fields should not change the other.
+3. Add several primitive `int` values to a `List<Integer>` and calculate their total.
+4. What happens if an `Integer` with value `null` is assigned to an `int`?
+
+\\ CODES OF LECTURE 7
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Lecture7Autoboxing {
+    public static void main(String[] args) {
+        System.out.println("=== Lecture 7: Classes, Objects, and Autoboxing ===\n");
+
+        CountRecord first = new CountRecord("First", 10);
+        CountRecord second = new CountRecord("Second", 25);
+
+        first.add(5);
+        System.out.println(first.getLabel() + " count: " + first.getCount());
+        System.out.println(second.getLabel() + " count: " + second.getCount());
+
+        int primitiveScore = 42;
+        Integer wrappedScore = primitiveScore;
+        int unwrappedScore = wrappedScore;
+        System.out.println("\nPrimitive score: " + primitiveScore);
+        System.out.println("Wrapped score: " + wrappedScore);
+        System.out.println("Unwrapped score: " + unwrappedScore);
+
+        List<Integer> scores = new ArrayList<>();
+        scores.add(80);
+        scores.add(95);
+        int total = 0;
+        for (Integer score : scores) {
+            total += score;
+        }
+        System.out.println("\nScores: " + scores);
+        System.out.println("Total: " + total);
+    }
+}
+
+final class CountRecord {
+    private final String label;
+    private int count;
+
+    CountRecord(String label, int count) {
+        this.label = label;
+        this.count = count;
+    }
+
+    String getLabel() {
+        return label;
+    }
+
+    int getCount() {
+        return count;
+    }
+
+    void add(int amount) {
+        count += amount;
+    }
+}
