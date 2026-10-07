@@ -1,1 +1,193 @@
+# OOP in Java - Lecture 8: Nested Classes
 
+The linked video is titled **"Java Nested Classes | Static Nested, Inner, Local & Anonymous Classes | Java Full Course #19"**. These original study notes explain the four nested-class forms shown in the companion example; they are not a verbatim transcript.
+
+## 1) What is a nested class?
+
+A nested class is a class declared inside another class. It can keep closely related code together and can use the access level of its enclosing class.
+
+Java has two broad kinds:
+
+- **Static nested classes** are declared with `static`.
+- **Inner classes** are non-static nested classes. Member inner classes, local classes, and anonymous classes are examples.
+
+## 2) Static nested classes
+
+A static nested class belongs to the enclosing class, not to an instance of it. It can be created without first constructing an object of the outer class:
+
+```java
+Lecture8NestedClasses.CourseSummary summary =
+    new Lecture8NestedClasses.CourseSummary("Nested Classes", 8);
+```
+
+It can directly access the enclosing class's static members, but it cannot directly access its instance fields or methods. It can still use an outer instance if one is explicitly passed or otherwise available.
+
+Use one when the nested type is related to the outer type but does not need an enclosing object.
+
+## 3) Inner (non-static member) classes
+
+A member inner class is associated with an instance of its enclosing class. Create it through that instance:
+
+```java
+Lecture8NestedClasses lesson = new Lecture8NestedClasses("Coder Army");
+Lecture8NestedClasses.Classroom room = lesson.new Classroom("Java OOP");
+```
+
+An inner-class object has access to the enclosing instance's members, including private fields. In the example, `Classroom` reads `instituteName` from its `Lecture8NestedClasses` instance.
+
+Use an inner class when it needs the state of a specific outer object.
+
+## 4) Local classes
+
+A local class is declared inside a method or block and is usable only within that scope.
+
+```java
+String topic = "Local classes";
+
+class TopicNote {
+    void print() {
+        System.out.println(topic);
+    }
+}
+```
+
+A local class can access the enclosing instance's members and local variables that are final or **effectively final** (assigned once and not reassigned). Keep it local when the helper type is only useful in one method.
+
+## 5) Anonymous classes
+
+An anonymous class has no declared name. It is declared and instantiated in one expression, usually to provide a one-off implementation of an interface or an extension of a class.
+
+```java
+Runnable reminder = new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Remember to practice.");
+    }
+};
+reminder.run();
+```
+
+An anonymous class can capture final or effectively final local variables. For a small one-method behavior in modern Java, a lambda may be a shorter alternative when the target type is a functional interface; anonymous classes are still useful when a distinct class body or its own instance context is needed.
+
+## 6) Quick comparison
+
+| Kind | Where declared | Needs an outer instance? | Typical use |
+| --- | --- | --- | --- |
+| Static nested | In a class, with `static` | No | A related helper or value type |
+| Inner member | In a class, without `static` | Yes | Behavior that uses outer-instance state |
+| Local | In a method or block | Created within the enclosing context | A helper needed only in one scope |
+| Anonymous | In an expression | Depends on the enclosing context | A one-off class or interface implementation |
+
+## 7) Running the example
+
+Compile and run from the repository directory:
+
+```text
+javac Lecture8NestedClasses.java
+java Lecture8NestedClasses
+```
+
+The example prints a course summary using a static nested class, classroom details using an inner class, a topic note using a local class, and a reminder using an anonymous `Runnable`.
+
+## 8) Key takeaways
+
+- Nested classes group types that belong together.
+- Static nested classes do not need an enclosing object and cannot directly access its instance members.
+- Inner classes are attached to an enclosing object and can access its members.
+- Local classes are scoped to a method or block and can capture final or effectively final locals.
+- Anonymous classes define a one-off subclass or interface implementation without naming it.
+- Choose the least complex form that clearly expresses the relationship and scope.
+
+## 9) Practice
+
+1. Add a static nested `CourseCode` class with a field and a method that prints it.
+2. Add an inner class that reads two fields from its enclosing object.
+3. Write a method-local class that captures a local variable, then observe the compile error if you reassign that variable.
+4. Implement a small interface once with an anonymous class and once with a named class. Compare when each is easier to read.
+
+// CODES FOR LECTURE 8
+
+public class Lecture8NestedClasses {
+    private final String instituteName;
+
+    Lecture8NestedClasses(String instituteName) {
+        this.instituteName = instituteName;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Lecture 8: Nested Classes in Java ===\n");
+
+        Lecture8NestedClasses lesson = new Lecture8NestedClasses("Coder Army");
+        lesson.showStaticNestedClass();
+        lesson.showInnerClass();
+        lesson.showLocalClass();
+        lesson.showAnonymousClass();
+    }
+
+    private void showStaticNestedClass() {
+        System.out.println("--- Static nested class ---");
+        CourseSummary summary =
+            new Lecture8NestedClasses.CourseSummary("Nested Classes", 8);
+        summary.print();
+        System.out.println();
+    }
+
+    private void showInnerClass() {
+        System.out.println("--- Inner class ---");
+        Classroom classroom = new Classroom("Java OOP");
+        classroom.printDetails();
+        System.out.println();
+    }
+
+    private void showLocalClass() {
+        System.out.println("--- Local class ---");
+        String topic = "Local classes";
+
+        class TopicNote {
+            void print() {
+                System.out.println("Institute: " + instituteName);
+                System.out.println("Note: Learning about " + topic);
+            }
+        }
+
+        new TopicNote().print();
+        System.out.println();
+    }
+
+    private void showAnonymousClass() {
+        System.out.println("--- Anonymous class ---");
+        Runnable reminder = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Remember to practice nested classes.");
+            }
+        };
+        reminder.run();
+    }
+
+    static final class CourseSummary {
+        private final String courseName;
+        private final int lessonNumber;
+
+        CourseSummary(String courseName, int lessonNumber) {
+            this.courseName = courseName;
+            this.lessonNumber = lessonNumber;
+        }
+
+        void print() {
+            System.out.println("Lesson " + lessonNumber + ": " + courseName);
+        }
+    }
+
+    private class Classroom {
+        private final String subject;
+
+        Classroom(String subject) {
+            this.subject = subject;
+        }
+
+        void printDetails() {
+            System.out.println(instituteName + " classroom: " + subject);
+        }
+    }
+}
